@@ -48,9 +48,17 @@ done
 
 : '
 #accessing args
+## way 1
 echo $0 $1 $3
 args=("$@")
 echo ${args[0]} ${args[1]} ${args[2]} ${args[3]}
+## way 2
+i=0
+for argoo
+do
+  i=$(($i+1))
+  echo $argoo is arg $i
+done
 '
 : '
 # my implementation of find command
@@ -75,6 +83,21 @@ do
 	fi
 done < <(ls * -d)
 '
+: ' select, switch-case, break loop
 
+select anime in Naruto Bleach 'One Piece' Pokemon 'Dragon Ball Z'
+do
+  case $anime in
+  Naruto)
+    echo Good choice!;;
+  Pokemon)
+    echo Two piece is better;;
+  'Dragon Ball Z')
+    break;;
+  *)
+    echo hahaha;;
+    esac
+done
+'
 
- echo Done program
+echo Done program
