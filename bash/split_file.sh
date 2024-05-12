@@ -37,7 +37,7 @@ toSkip=0
 while (($parts>1))
 do
     ofile=${infile//$fname/${i}_$fname}
-    dd bs=1 count=$size skip=$toSkip if="$infile" of="$ofile" &
+    dd bs=1 count=$size skip=$toSkip if="$infile" iflag=binary of="$ofile" oflag=binary &
     i=$(($i+1))
     toSkip=$(($i*$size))
     isize=$(($isize-$size))
@@ -45,6 +45,6 @@ do
 done
 
 ofile=${infile//$fname/${i}_$fname}
-dd bs=1 count=$size skip=$toSkip if="$infile" of="$ofile"
+dd bs=1 count=$size skip=$toSkip if="$infile" iflag=binary of="$ofile" oflag=binary
 
 

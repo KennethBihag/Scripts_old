@@ -16,3 +16,8 @@ for i in $(seq 1 $parts); do
     actPath=${infile//$fname/${j}_$fname}
     cat "$actPath" >> "$opath" 2>/dev/null
 done
+
+if [ "$OS" != "Windows_NT" ]
+then
+    chmod +x "$opath"
+fi
