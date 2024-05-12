@@ -12,7 +12,11 @@ then
     exit 1
 fi
 
-fname=$(echo "$infile" | awk -F'/' '{print $NF}')
+: 'fname=$(awk -F'/' '{print $NF}' <<< "$infile") '
+IFS=/
+read -a toks <<< $infile
+unset IFS
+fname=${toks[-1]}
 
 if (($parts<2))
 then
@@ -33,6 +37,8 @@ fi
 echo Splitting $infile to $parts $size-byte parts
 
 i=0
+
+: '
 toSkip=0
 while (($parts>1))
 do
@@ -46,5 +52,21 @@ done
 
 ofile=${infile//$fname/${i}_$fname}
 dd bs=1 count=$size skip=$toSkip if="$infile" iflag=binary of="$ofile" oflag=binary
+'
 
+while (($parts>1))
+do
+    ofile=${infile//$fname/${i}_$fname}
+    offSet=$(($i*$size + 1))
+    tail --bytes=+$offSet "$infile" | head --bytes=$size > "$ofile" &
 
+    i=$(($i+1))
+    isize=$(($isize-$size))
+    parts=$(($parts-1))
+done
+
+if (($isize>0))
+then
+    ofile=${infile//$fname/${i}_$fname}
+    tail -c $isize "$infile" > "$ofile"
+fi
